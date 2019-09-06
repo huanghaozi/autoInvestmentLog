@@ -1,61 +1,122 @@
 #coding: utf-8
 from bs4 import BeautifulSoup
-from xlutils import copy
-import xlrd, requests, datetime, string, os
+import requests, datetime, string, os, xlsxwriter
 
 todaytime = datetime.datetime.today().strftime('%Y-%m-%d-%H-%M-%S')
 
-try:
-    rd_book = xlrd.open_workbook('DataBlog.xlsx')
-except:
-    print("请确保DataBlog.xlsx在本程序同目录下!\n")
-    os.system("PAUSE")
-wt_book = copy.copy(rd_book)
-wt_sheet = wt_book.get_sheet(0)
-wt_sheetdqs = wt_book.get_sheet(1)
-wt_sheetshibor = wt_book.get_sheet(2)
-wt_sheetlibor = wt_book.get_sheet(3)
+wt_book = xlsxwriter.Workbook(todaytime + '.xlsx')
+wt_sheet = wt_book.add_worksheet('AllData')
 
-def write2xlsx(allData,xrow):
-    wt_sheet.write(xrow,0,allData['时间'])
-    wt_sheet.write(xrow,1,allData['名称'])
-    wt_sheet.write(xrow,2,allData['开'])
-    wt_sheet.write(xrow,3,allData['现'])
-    wt_sheet.write(xrow,4,allData['昨收'])
-    wt_sheet.write(xrow,5,allData['最高'])
-    wt_sheet.write(xrow,6,allData['最低'])
-    wt_sheet.write(xrow,7,allData['涨跌'])
-    wt_sheet.write(xrow,8,allData['涨跌百分比'])
-    if('成交量' in allData.keys()):
-        wt_sheet.write(xrow,9,allData['成交量'])
+styleA = wt_book.add_format({
+    "bold": True, 
+    "font_name": 'Microsoft YaHei', 
+    "font_size": 12,
+    "align" : 'center',
+    "locked" : True
+})
+styleB = wt_book.add_format({
+    "font_name": 'Microsoft YaHei Light', 
+    "font_size": 14,
+    "align" : 'center',
+    "num_format": '#,##0.000'
+})
+styleC = wt_book.add_format({
+    "font_name": 'Microsoft YaHei Light', 
+    "font_size": 14,
+    "align" : 'center',
+    "num_format": 'yyyy-mm-dd'
+})
+styleD = wt_book.add_format({
+    "font_name": 'Microsoft YaHei Light', 
+    "font_size": 14,
+    "align" : 'center',
+    "num_format": '0.000%'
+})
+
+def writeInit2xlsx():
+    wt_sheet.write(0, 0, "日期", styleA)
+    wt_sheet.write(0, 1, "名称", styleA)
+    wt_sheet.write(0, 2, "开", styleA)
+    wt_sheet.write(0, 3, "现", styleA)
+    wt_sheet.write(0, 4, "昨收", styleA)
+    wt_sheet.write(0, 5, "最高", styleA)
+    wt_sheet.write(0, 6, "最低", styleA)
+    wt_sheet.write(0, 7, "涨跌", styleA)
+    wt_sheet.write(0, 8, "涨跌百分比", styleA)
+    wt_sheet.write(0, 9, "成交量（手）", styleA)
     
-def writedqs2xlsx(allData):
-    wt_sheetdqs.write(1,0,allData['时间'])
-    wt_sheetdqs.write(1,1,allData['名称'])
-    wt_sheetdqs.write(1,2,allData['点数'])
-    wt_sheetdqs.write(1,3,allData['涨跌'])
-    wt_sheetdqs.write(1,4,allData['涨跌百分比'])
+    wt_sheet.write(13, 0, "Shibor", styleB)
+    wt_sheet.write(14, 0, "日期", styleA)
+    wt_sheet.write(14, 1, "O/N", styleA)
+    wt_sheet.write(14, 2, "1W", styleA)
+    wt_sheet.write(14, 3, "2W", styleA)
+    wt_sheet.write(14, 4, "1M", styleA)
+    wt_sheet.write(14, 5, "3M", styleA)
+    wt_sheet.write(14, 6, "6M", styleA)
+    wt_sheet.write(14, 7, "9M", styleA)
+    wt_sheet.write(14, 8, "1Y", styleA)
+    
+    wt_sheet.write(17, 0, "Libor", styleB)
+    wt_sheet.write(18, 0, "日期", styleA)
+    wt_sheet.write(18, 1, "O/N", styleA)
+    wt_sheet.write(18, 2, "1W", styleA)
+    wt_sheet.write(18, 3, "1M", styleA)
+    wt_sheet.write(18, 4, "2M", styleA)
+    wt_sheet.write(18, 5, "3M", styleA)
+    wt_sheet.write(18, 6, "6M", styleA)
+    wt_sheet.write(18, 7, "1Y", styleA)
+    
+    wt_sheet.set_column('A:B', 14.0)
+    wt_sheet.set_column('B:C', 13.4)
+    wt_sheet.set_column('C:D', 12.32)
+    wt_sheet.set_column('D:E', 13.4)
+    wt_sheet.set_column('E:F', 13.4)
+    wt_sheet.set_column('F:G', 13.4)
+    wt_sheet.set_column('G:H', 13.4)
+    wt_sheet.set_column('H:I', 8.735)
+    wt_sheet.set_column('I:J', 11.3675)
+    wt_sheet.set_column('J:K', 19.7436)
+    
+def write2xlsx(allData,xrow):
+    wt_sheet.write(xrow,0,allData['时间'], styleC)
+    wt_sheet.write(xrow,1,allData['名称'], styleB)
+    wt_sheet.write_number(xrow,2,allData['开'], styleB)
+    wt_sheet.write_number(xrow,3,allData['现'], styleB)
+    wt_sheet.write_number(xrow,4,allData['昨收'], styleB)
+    wt_sheet.write_number(xrow,5,allData['最高'], styleB)
+    wt_sheet.write_number(xrow,6,allData['最低'], styleB)
+    wt_sheet.write_number(xrow,7,allData['涨跌'], styleB)
+    wt_sheet.write_number(xrow,8,allData['涨跌百分比'], styleD)
+    if('成交量' in allData.keys()):
+        wt_sheet.write_number(xrow,9,allData['成交量'], styleB)
+    
+def writedqs2xlsx(allData, xrow):
+    wt_sheet.write(xrow,0,allData['时间'], styleC)
+    wt_sheet.write(xrow,1,allData['名称'], styleB)
+    wt_sheet.write_number(xrow,3,allData['点数'], styleB)
+    wt_sheet.write_number(xrow,7,allData['涨跌'], styleB)
+    wt_sheet.write_number(xrow,8,allData['涨跌百分比'], styleD)
     
 def writeshibor2xlsx(allData):
-    wt_sheetshibor.write(1,0,allData['时间'])
-    wt_sheetshibor.write(1,1,allData['O/N'])
-    wt_sheetshibor.write(1,2,allData['1W'])
-    wt_sheetshibor.write(1,3,allData['2W'])
-    wt_sheetshibor.write(1,4,allData['1M'])
-    wt_sheetshibor.write(1,5,allData['3M'])
-    wt_sheetshibor.write(1,6,allData['6M'])
-    wt_sheetshibor.write(1,7,allData['9M'])
-    wt_sheetshibor.write(1,8,allData['1Y'])
+    wt_sheet.write(15,0,allData['时间'], styleC)
+    wt_sheet.write_number(15,1,allData['O/N'], styleB)
+    wt_sheet.write_number(15,2,allData['1W'], styleB)
+    wt_sheet.write_number(15,3,allData['2W'], styleB)
+    wt_sheet.write_number(15,4,allData['1M'], styleB)
+    wt_sheet.write_number(15,5,allData['3M'], styleB)
+    wt_sheet.write_number(15,6,allData['6M'], styleB)
+    wt_sheet.write_number(15,7,allData['9M'], styleB)
+    wt_sheet.write_number(15,8,allData['1Y'], styleB)
     
 def writelibor2xlsx(allData):
-    wt_sheetlibor.write(1,0,allData['时间'])
-    wt_sheetlibor.write(1,1,allData['O/N'])
-    wt_sheetlibor.write(1,2,allData['1W'])
-    wt_sheetlibor.write(1,3,allData['1M'])
-    wt_sheetlibor.write(1,4,allData['2M'])
-    wt_sheetlibor.write(1,5,allData['3M'])
-    wt_sheetlibor.write(1,6,allData['6M'])
-    wt_sheetlibor.write(1,7,allData['12M'])
+    wt_sheet.write(19,0,allData['时间'], styleC)
+    wt_sheet.write_number(19,1,allData['O/N'], styleB)
+    wt_sheet.write_number(19,2,allData['1W'], styleB)
+    wt_sheet.write_number(19,3,allData['1M'], styleB)
+    wt_sheet.write_number(19,4,allData['2M'], styleB)
+    wt_sheet.write_number(19,5,allData['3M'], styleB)
+    wt_sheet.write_number(19,6,allData['6M'], styleB)
+    wt_sheet.write_number(19,7,allData['12M'], styleB)
     
 def get_libor():
     libor = {}
@@ -63,13 +124,13 @@ def get_libor():
     soup = BeautifulSoup(response.text, 'lxml')
     allData = soup.find('table', style='width:100%;margin:16px 0px 0px 0px;border:1px solid #CCCCCC;').find_all('td')
     libor['时间'] = datetime.datetime.strptime(soup.find('span',id='lbl_hdr2').string,'%m-%d-%Y').strftime('%Y-%m-%d')
-    libor['O/N'] = allData[7].string[:7]
-    libor['1W'] = allData[13].string[:7]
-    libor['1M'] = allData[25].string[:7]
-    libor['2M'] = allData[31].string[:7]
-    libor['3M'] = allData[37].string[:7]
-    libor['6M'] = allData[55].string[:7]
-    libor['12M'] = allData[91].string[:7]
+    libor['O/N'] = float(allData[7].string[:7])
+    libor['1W'] = float(allData[13].string[:7])
+    libor['1M'] = float(allData[25].string[:7])
+    libor['2M'] = float(allData[31].string[:7])
+    libor['3M'] = float(allData[37].string[:7])
+    libor['6M'] = float(allData[55].string[:7])
+    libor['12M'] = float(allData[91].string[:7])
     print(libor)
     return libor
     
@@ -79,14 +140,14 @@ def get_shibor():
     soup = BeautifulSoup(response.text, 'lxml')
     allData = soup.find('table',class_='shiborquxian2').find('tr').find_all('td')
     shibor['时间'] = allData[0].string
-    shibor['O/N'] = allData[1].string
-    shibor['1W'] = allData[2].string
-    shibor['2W'] = allData[3].string
-    shibor['1M'] = allData[4].string
-    shibor['3M'] = allData[5].string
-    shibor['6M'] = allData[6].string
-    shibor['9M'] = allData[7].string
-    shibor['1Y'] = allData[8].string
+    shibor['O/N'] = float(allData[1].string)
+    shibor['1W'] = float(allData[2].string)
+    shibor['2W'] = float(allData[3].string)
+    shibor['1M'] = float(allData[4].string)
+    shibor['3M'] = float(allData[5].string)
+    shibor['6M'] = float(allData[6].string)
+    shibor['9M'] = float(allData[7].string)
+    shibor['1Y'] = float(allData[8].string)
     print(shibor)
     return shibor
 
@@ -100,6 +161,7 @@ class cdjkinfo(object):
             content = requests.get('http://hq.sinajs.cn/list=' + self.id).text                  #获取数据
         except:
             print("请检查网络连接！")
+            os.system("PAUSE")
         str = content[(content.find('"'))+1:][:content[(content.find('"'))+1:].find('"')]       #整理字符串
         All_data = str.split(',')                                                               #分离数据
         if self.type == 0:                                                                      #股票
@@ -152,7 +214,7 @@ class cdjkinfo(object):
             else:
                 self.allToday = {"时间":self.time.strftime('%Y-%m-%d'), "名称": self.name, "开":self.kd, "现":self.xm, "昨收":self.zouz, "最高":self.zvgc, "最低":self.zvdi, "涨跌":self.vhdp, "涨跌百分比":self.vhdpPercent}
         else:
-            self.allToday = {"时间":self.time.strftime('%Y-%m-%d'), "名称": self.name, "点数":self.xm, "涨跌":self.vhdp, "涨跌百分比":self.vhdpPercent}
+            self.allToday = {"时间":self.time.strftime('%Y-%m-%d'), "名称": self.name, "点数":self.xm, "涨跌":self.vhdp, "涨跌百分比":self.vhdpPercent/100}
         print(self.allToday)
         
 #上证指数
@@ -179,6 +241,8 @@ dqs = {'id' : 'int_dji', 'type':'4'}
 
 #USDCNY
 usdcny = {'id' : 'USDCNY', 'type':'3'}
+
+writeInit2xlsx()
 
 print("正在获取上证指数")
 getsz = cdjkinfo(sz['id'], int(sz['type']))
@@ -222,7 +286,7 @@ print('\n')
 print("正在获取道琼斯")
 getdqs = cdjkinfo(dqs['id'], int(dqs['type']))
 getdqs.get_info()
-writedqs2xlsx(getdqs.allToday)
+writedqs2xlsx(getdqs.allToday, 9)
 print('\n')
 
 print("正在获取USDCNY")
@@ -241,21 +305,42 @@ libor = get_libor()
 writelibor2xlsx(libor)
 print('\n')
 
-zixuan1 = input("请输入第一支自选股ID(示例：sh600795、sz002195、sz300003)(enter跳过): ")
+zixuan1 = input("请输入第一支自选股代码(Enter跳过): ")
 if(zixuan1 != ''):  
+    firstLetter = zixuan1[0]
+    if(firstLetter == '6'):
+        zixuan1 = 'sh' + zixuan1
+    elif(firstLetter == '3' or firstLetter =='0'):
+        zixuan1 = 'sz' + zixuan1
+    else:
+        print("请输入0，3，6开头的股票代码")
+        os.system("PAUSE")
+        exit()
     print("正在获取" + zixuan1)
     zixuanA = cdjkinfo(zixuan1, 0)
     zixuanA.get_info()
-    write2xlsx(zixuanA.allToday,9)
+    write2xlsx(zixuanA.allToday,10)
+    print('\n')
     
-zixuan2 = input("请输入第二支自选股ID(示例：sh600795、sz002195、sz300003)(enter跳过): ")
+zixuan2 = input("请输入第二支自选股代码(Enter跳过): ")
 if(zixuan2 != ''):  
+    firstLetter = zixuan2[0]
+    if(firstLetter == '6'):
+        zixuan2 = 'sh' + zixuan2
+    elif(firstLetter == '3' or firstLetter =='0'):
+        zixuan2 = 'sz' + zixuan2
+    else:
+        print("请输入0，3，6开头的股票代码")
+        os.system("PAUSE")
+        exit()
     print("正在获取" + zixuan2)
     zixuanB = cdjkinfo(zixuan2, 0)
     zixuanB.get_info()
-    write2xlsx(zixuanB.allToday,10)
-    
-wt_book.save(todaytime + '.xls')
+    write2xlsx(zixuanB.allToday,11)
+    print('\n')
+
+
+wt_book.close()
 print("保存成功\n文件名：" + todaytime + '.xls\n')
 
 os.system("PAUSE")
