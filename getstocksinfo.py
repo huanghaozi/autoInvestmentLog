@@ -26,6 +26,8 @@ def write2xlsx(allData,xrow):
     wt_sheet.write(xrow,6,allData['最低'])
     wt_sheet.write(xrow,7,allData['涨跌'])
     wt_sheet.write(xrow,8,allData['涨跌百分比'])
+    if('成交量' in allData.keys()):
+        wt_sheet.write(xrow,9,allData['成交量'])
     
 def writedqs2xlsx(allData):
     wt_sheetdqs.write(1,0,allData['时间'])
@@ -104,6 +106,10 @@ class cdjkinfo(object):
             self.zouz = float(All_data[2])                                                      #昨收
             self.zvgc = float(All_data[4])                                                      #最高
             self.zvdi = float(All_data[5])                                                      #最低
+            if self.id == 'sh000001':
+                self.igjnll = float(All_data[8])                                                #成交量（单位：手）
+            else:
+                self.igjnll = float(All_data[8])/100
             self.time = datetime.datetime.strptime(All_data[30] + ' ' + All_data[31],'%Y-%m-%d %H:%M:%S')
         elif self.type == 1:                                                                    #期货
             self.name = All_data[0]                                                             #名称
@@ -138,7 +144,10 @@ class cdjkinfo(object):
         if self.type != 4:
             self.vhdp = self.xm - self.zouz
             self.vhdpPercent = (self.xm - self.zouz)/self.zouz
-            self.allToday = {"时间":self.time.strftime('%Y-%m-%d'), "名称": self.name, "开":self.kd, "现":self.xm, "昨收":self.zouz, "最高":self.zvgc, "最低":self.zvdi, "涨跌":self.vhdp, "涨跌百分比":self.vhdpPercent}
+            if self.type == 0:
+                self.allToday = {"时间":self.time.strftime('%Y-%m-%d'), "名称": self.name, "开":self.kd, "现":self.xm, "昨收":self.zouz, "最高":self.zvgc, "最低":self.zvdi, "涨跌":self.vhdp, "涨跌百分比":self.vhdpPercent, "成交量": self.igjnll}
+            else:
+                self.allToday = {"时间":self.time.strftime('%Y-%m-%d'), "名称": self.name, "开":self.kd, "现":self.xm, "昨收":self.zouz, "最高":self.zvgc, "最低":self.zvdi, "涨跌":self.vhdp, "涨跌百分比":self.vhdpPercent}
         else:
             self.allToday = {"时间":self.time.strftime('%Y-%m-%d'), "名称": self.name, "点数":self.xm, "涨跌":self.vhdp, "涨跌百分比":self.vhdpPercent}
         print(self.allToday)
@@ -224,12 +233,25 @@ shibor = get_shibor()
 writeshibor2xlsx(shibor)
 print('\n')
 
-print("正在获取Libor")
+print("正在获取Libor（可能较慢，请耐心等待）")
 libor = get_libor()
 writelibor2xlsx(libor)
 print('\n')
 
-
+zixuan1 = input("请输入第一支自选股ID(示例：sh600795、sz002195、sz300003)(enter跳过): ")
+if(zixuan1 != ''):  
+    print("正在获取" + zixuan1)
+    zixuanA = cdjkinfo(zixuan1, 0)
+    zixuanA.get_info()
+    write2xlsx(zixuanA.allToday,9)
+    
+zixuan2 = input("请输入第一支自选股ID(示例：sh600795、sz002195、sz300003)(enter跳过): ")
+if(zixuan2 != ''):  
+    print("正在获取" + zixuan2)
+    zixuanB = cdjkinfo(zixuan2, 0)
+    zixuanB.get_info()
+    write2xlsx(zixuanB.allToday,10)
+    
 wt_book.save(todaytime + '.xls')
 print("保存成功\n文件名：" + todaytime + '.xls\n')
 
