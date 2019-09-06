@@ -96,7 +96,10 @@ class cdjkinfo(object):
         self.type = type            #类型
         
     def get_info(self):
-        content = requests.get('http://hq.sinajs.cn/list=' + self.id).text                      #获取数据
+        try:
+            content = requests.get('http://hq.sinajs.cn/list=' + self.id).text                  #获取数据
+        except:
+            print("请检查网络连接！")
         str = content[(content.find('"'))+1:][:content[(content.find('"'))+1:].find('"')]       #整理字符串
         All_data = str.split(',')                                                               #分离数据
         if self.type == 0:                                                                      #股票
@@ -245,7 +248,7 @@ if(zixuan1 != ''):
     zixuanA.get_info()
     write2xlsx(zixuanA.allToday,9)
     
-zixuan2 = input("请输入第一支自选股ID(示例：sh600795、sz002195、sz300003)(enter跳过): ")
+zixuan2 = input("请输入第二支自选股ID(示例：sh600795、sz002195、sz300003)(enter跳过): ")
 if(zixuan2 != ''):  
     print("正在获取" + zixuan2)
     zixuanB = cdjkinfo(zixuan2, 0)
