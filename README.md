@@ -6,8 +6,8 @@
 
 # 使用方法
 ### 新版本
-1. 下载地址：[点我]( https://github.com/huanghaozi/autoInvestmentLog/releases )，点击**Assets**下面的“ImReallyNotGuaB-Win.exe”下载程序
-2. 直接打开运行
+1. 下载地址：[点我]( https://img.hacpai.com/file/2019/09/ImReallyNotGuaB-c9bd5d9e.zip )
+2. 解压后直接打开运行
 3. 获取完libor后输入的股票代码，**不用加前缀啦**
 
 ### 不用像下面这样这么麻烦啦
