@@ -33,7 +33,6 @@ jobs:
         git add .
         git commit -m "UPDATE DATA by github actions" -a
     - name: GitHub Push
-      uses: ad-m/github-push-action@v0.6.0
+      uses: ad-m/github-push-action@master
       with: 
         github_token: ${{ secrets.TOKEN }}
-        branch: change
