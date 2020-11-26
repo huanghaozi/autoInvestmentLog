@@ -1,0 +1,42 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  issues:
+    branches: 
+      - change
+  schedule:
+    - cron: 0 13 * * *
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install akshare
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Get Data
+      run: |
+        python getstocksinfo.py
+    - name: Commit
+      run: |
+        git config --global user.email johnhaung@163.com
+        git config --global user.name huanghaozi
+        git add .
+        git commit -m "UPDATE DATA by github actions" -a
+    - name: GitHub Push
+      uses: ad-m/github-push-action@v0.6.0
+      with: 
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: change
