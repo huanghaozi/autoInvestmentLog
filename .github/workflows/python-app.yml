@@ -22,6 +22,21 @@ jobs:
       run: |
         python getstocksinfo.py
         python extractData.py
+    - name: Cat File
+      id: catall
+      run: echo "::set-output name=test::$(cat todayData.txt)"
+      shell: bash
+    - name: ServerChan Notify
+      uses: yakumioto/serverchan-action@v1
+      env:
+        DATA_CT: ${{ steps.catall.outputs.test }}
+      with:
+        # Secret key
+        key: ${{ secrets.sckey }}
+        # Message title
+        text: 今日数据
+        # Message content
+        desp: $DATA_CT
     - name: Commit
       run: |
         git config --global user.email johnhaung@163.com
@@ -30,24 +45,5 @@ jobs:
         git commit -m "UPDATE DATA by github actions" -a
     - name: GitHub Push
       uses: ad-m/github-push-action@master
-      with: 
+      with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-  Push_Data:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cat File
-        id: catall
-        run: echo "::set-output name=test::$(cat todayData.txt)"
-        shell: bash
-      - name: ServerChan Notify
-        uses: yakumioto/serverchan-action@v1
-        env:
-          DATA_CT: ${{ steps.catall.outputs.test }}
-        with:
-          # Secret key
-          key: ${{ secrets.sckey }}
-          # Message title
-          text: 今日数据
-          # Message content
-          desp: $DATA_CT
-  
