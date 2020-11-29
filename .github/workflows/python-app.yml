@@ -2,16 +2,12 @@ name: Get All Data
 
 on:
   issues:
-    branches: 
-      - change
   schedule:
     - cron: 0 13 * * *
 
 jobs:
-  build:
-
+  Get_And_Extract_Data:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -36,3 +32,18 @@ jobs:
       uses: ad-m/github-push-action@master
       with: 
         github_token: ${{ secrets.TOKEN }}
+  Push_Data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ServerChan Notify
+        uses: yakumioto/serverchan-action@v1
+        env:
+          DATA_CT: ${{ cat todayData.txt }}
+        with:
+          # Secret key
+          key: ${{ secrets.sckey }}
+          # Message title
+          text: 今日数据
+          # Message content
+          desp: $DATA_CT
+  
