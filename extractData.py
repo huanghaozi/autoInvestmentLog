@@ -21,7 +21,7 @@ for stock_code in stocks_codes_list:
         name = df_temp['name'][0]
         trade = df_temp['trade'][0]
         change = df_temp['changepercent'][0]
-        report += "{code} {name}  现价 {close:.2f}, {vhdp}{change:.2f}%\n"\
+        report += "{code} {name}  现价 {close:.2f}, {vhdp}{change:.2f}%\r\n\r\n"\
             .format(code=stock_code, name=name, close=float(trade)
                     , vhdp='上涨' if float(change) >= 0 else '下跌', change=abs(float(change)))
     except:
@@ -38,7 +38,7 @@ for name in inner_goods_future_list:
         df_temp = df_inner_goods[df_inner_goods['symbol'].str.contains(name)].reset_index(drop=True)
         price = df_temp['current_price'][0]
         change = df_temp['change'][0]
-        report += "{name}  现价 {price:.2f}, {vhdp}{change:.2f}%\n"\
+        report += "{name}  现价 {price:.2f}, {vhdp}{change:.2f}%\r\n\r\n"\
             .format(name=name, price=float(price), change=abs(float(change)), vhdp='上涨' if float(change) >=0 else '下跌')
     except:
         continue
@@ -54,7 +54,7 @@ for name in inner_finance_future_list:
         df_temp = df_inner_finance[df_inner_finance['symbol'].str.contains(name)].reset_index(drop=True)
         price = df_temp['current_price'][0]
         change = df_temp['change'][0]
-        report += "{name}  现价 {price:.2f}, {vhdp}{change:.2f}%\n"\
+        report += "{name}  现价 {price:.2f}, {vhdp}{change:.2f}%\r\n\r\n"\
             .format(name=name, price=float(price), change=abs(float(change)), vhdp='上涨' if float(change) >=0 else '下跌')
     except:
         continue
@@ -70,7 +70,7 @@ for name in outer_future_list:
         df_temp = df_outer[df_outer['symbol'].str.contains(name)].reset_index(drop=True)
         price = df_temp['current_price'][0]
         change = df_temp['change'][0]
-        report += "{name}  现价 {price:.2f}, {vhdp}{change:.2f}%\n"\
+        report += "{name}  现价 {price:.2f}, {vhdp}{change:.2f}%\r\n\r\n"\
             .format(name=name, price=float(price), change=abs(float(change)), vhdp='上涨' if float(change) >=0 else '下跌')
     except:
         continue
@@ -82,7 +82,7 @@ for t in shibor_time_list:
         df_temp = pd.read_excel(localtime + '/Shibor_' + t + '.xlsx', index_col=0)
         rate = df_temp['利率(%)'][0]
         bp = df_temp['涨跌(BP)'][0]
-        report += "Shibor{ti}  利率 {rate}%, 涨跌{bp}BP\n"\
+        report += "Shibor{ti}  利率 {rate}%, 涨跌{bp}BP\r\n\r\n"\
             .format(ti=t, rate=rate, bp=bp)
     except:
         continue
@@ -94,7 +94,7 @@ for t in libor_time_list:
         df_temp = pd.read_excel(localtime + '/Libor_' + t + '.xlsx', index_col=0)
         rate = df_temp['利率(%)'][0]
         bp = df_temp['涨跌(BP)'][0]
-        report += "Libor美元 {ti}  利率 {rate}%, 涨跌{bp}BP\n"\
+        report += "Libor美元 {ti}  利率 {rate}%, 涨跌{bp}BP\r\n\r\n"\
             .format(ti=t, rate=rate, bp=bp)
     except:
         continue
