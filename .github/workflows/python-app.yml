@@ -22,15 +22,17 @@ jobs:
       run: |
         python getstocksinfo.py
         python extractData.py
+    - name: Read File to Var
+      id: rdFile
+      uses: juliangruber/read-file-action@v1.0.0
+      with:
+        path: ./todayData.txt
     - name: ServerChan Notify
       uses: yakumioto/serverchan-action@v1
       with:
-        # Secret key
         key: ${{ secrets.sckey }}
-        # Message title
         text: 今日数据
-        # Message content
-        desp: $(cat todayData.txt)
+        desp: ${{ steps.rdFile.outputs.content }}
     - name: Commit
       run: |
         git config --global user.email johnhaung@163.com
