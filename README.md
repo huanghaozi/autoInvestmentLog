@@ -20,6 +20,8 @@
 [http://sc.ftqq.com](http://sc.ftqq.com)
 ## Fork此项目
 
+点击右上角Fork等待完成即可
+
 ## 新建Secrets存入Token
 
 转到自己Fork的项目下，点击项目的Settings--Secrets，新建一个Secret，名称为SCKEY，并将Server酱中的Token复制进其内容，保存。
