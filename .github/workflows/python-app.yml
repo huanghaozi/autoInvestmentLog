@@ -28,15 +28,13 @@ jobs:
       shell: bash
     - name: ServerChan Notify
       uses: yakumioto/serverchan-action@v1
-      env:
-        DATA_CT: ${{ steps.catall.outputs.test }}
       with:
         # Secret key
         key: ${{ secrets.sckey }}
         # Message title
         text: 今日数据
         # Message content
-        desp: $DATA_CT
+        desp: ${{ steps.catall.outputs.test }}
     - name: Commit
       run: |
         git config --global user.email johnhaung@163.com
