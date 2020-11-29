@@ -8,7 +8,7 @@
 :point_right: 可自动提取所需数据，并使用**Server酱**推送至微信
 
 # 效果
-
+![](https://cdn.jsdelivr.net/gh/huanghaozi/autoInvestmentLog/preview.jpg)
 
 # 使用流程
 ## 注册Github
