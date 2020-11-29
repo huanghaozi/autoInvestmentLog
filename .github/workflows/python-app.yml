@@ -22,10 +22,6 @@ jobs:
       run: |
         python getstocksinfo.py
         python extractData.py
-    - name: Cat File
-      id: catall
-      run: echo "::set-output name=test::$(cat todayData.txt)"
-      shell: bash
     - name: ServerChan Notify
       uses: yakumioto/serverchan-action@v1
       with:
@@ -34,7 +30,7 @@ jobs:
         # Message title
         text: 今日数据
         # Message content
-        desp: ${{ steps.catall.outputs.test }}
+        desp: $(cat todayData.txt)
     - name: Commit
       run: |
         git config --global user.email johnhaung@163.com
