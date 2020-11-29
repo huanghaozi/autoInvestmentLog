@@ -35,10 +35,14 @@ jobs:
   Push_Data:
     runs-on: ubuntu-latest
     steps:
+      - name: Cat File
+        id: catall
+        run: echo "::set-output name=test::$(cat todayData.txt)"
+        shell: bash
       - name: ServerChan Notify
         uses: yakumioto/serverchan-action@v1
         env:
-          DATA_CT: ${{ cat todayData.txt }}
+          DATA_CT: ${{ steps.catall.outputs.test }}
         with:
           # Secret key
           key: ${{ secrets.sckey }}
