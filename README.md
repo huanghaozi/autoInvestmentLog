@@ -8,6 +8,8 @@
 
 :point_right: 可自动提取所需数据，并使用**Server酱**推送至微信
 
+:point_right: 不需要下载程序或安装繁杂的环境
+
 # 效果
 ![](https://cdn.jsdelivr.net/gh/huanghaozi/autoInvestmentLog@master/preview.jpg)
 
