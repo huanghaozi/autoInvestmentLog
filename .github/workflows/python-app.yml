@@ -31,7 +31,7 @@ jobs:
     - name: GitHub Push
       uses: ad-m/github-push-action@master
       with: 
-        github_token: ${{ secrets.TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
   Push_Data:
     runs-on: ubuntu-latest
     steps:
