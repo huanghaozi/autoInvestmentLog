@@ -2,8 +2,8 @@ name: Get All Data
 
 on:
   issues:
-  schedule:
-    - cron: 0 13 * * *
+  # schedule:
+  #  - cron: 0 13 * * *
 
 jobs:
   Get_And_Extract_Data:
